@@ -93,12 +93,13 @@
   }
   .btn:hover { background: #2E5FA3; }
 
-  /* ERROR */
+  /* ERROR — aparece en columna derecha */
   .err {
     display: none;
     background: #fff8e1; border: 1px solid #ffc107;
-    color: #7d5a00; padding: 8px 12px;
-    border-radius: 6px; font-size: 12px; margin-top: 10px;
+    color: #7d5a00; padding: 14px 16px;
+    border-radius: 8px; font-size: 13px;
+    text-align: center; line-height: 1.6;
   }
   .err.on { display: block; }
 
@@ -199,7 +200,6 @@
         <input type="number" id="edad" min="18" max="100" placeholder="Ej: 35">
       </div>
       <button class="btn" onclick="calc()">Calcular mi aporte</button>
-      <div class="err" id="err"></div>
     </div>
 
     <!-- RESULTADO -->
@@ -208,6 +208,7 @@
         <svg viewBox="0 0 24 24"><path d="M11 17h2v-6h-2zm1-8a1 1 0 100 2 1 1 0 000-2zm0-7C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
         Selecciona tu plan, grupo familiar<br>y edad para ver tu aporte mensual.
       </div>
+      <div class="err" id="err"></div>
       <div class="result" id="res">
         <div class="res-label">Tu aporte mensual estimado</div>
         <div class="line line-a">
@@ -259,10 +260,23 @@
     const empEl = document.getElementById('empty');
 
     errEl.className = 'err';
+    resEl.className = 'result';
 
-    if (!plan)                          { errEl.textContent='Selecciona un plan EPS.'; errEl.className='err on'; return; }
-    if (grupo==='')                     { errEl.textContent='Selecciona la composición de grupo.'; errEl.className='err on'; return; }
-    if (!edad||edad<18||edad>100)       { errEl.textContent='Ingresa tu edad (18–100 años).'; errEl.className='err on'; return; }
+    if (!plan) {
+      empEl.style.display = 'none';
+      errEl.textContent = 'Selecciona un plan EPS.';
+      errEl.className = 'err on'; return;
+    }
+    if (grupo==='') {
+      empEl.style.display = 'none';
+      errEl.textContent = 'Selecciona la composición de grupo familiar.';
+      errEl.className = 'err on'; return;
+    }
+    if (!edad||edad<18||edad>100) {
+      empEl.style.display = 'none';
+      errEl.textContent = 'Ingresa tu edad en años (entre 18 y 100).';
+      errEl.className = 'err on'; return;
+    }
 
     const e = EPS[plan][parseInt(grupo)];
     const o = onco(edad);
