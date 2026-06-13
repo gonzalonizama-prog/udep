@@ -104,6 +104,16 @@
   }
   #itemsContainer {
     min-height: 56px;
+    max-height: 220px;
+    overflow-y: auto;
+    padding-right: 2px;
+  }
+  #itemsContainer::-webkit-scrollbar {
+    width: 6px;
+  }
+  #itemsContainer::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 3px;
   }
   .empty-state, .error-state {
     font-size: 12px;
