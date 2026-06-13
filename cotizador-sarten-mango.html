@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cotizador - Sartén & Mango</title>
+<style>
+  :root {
+    --terracota: #C1502E;
+    --terracota-dark: #A8401F;
+    --sage: #7A8C5C;
+    --crema: #FBF2E6;
+    --carbon: #3A332E;
+    --muted: #8A8076;
+    --border: #E8DECF;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #FFFFFF;
+    color: var(--carbon);
+    padding: 16px;
+  }
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .header .icon {
+    width: 36px;
+    height: 36px;
+    background: var(--terracota);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--crema);
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .header .titles h1 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .header .titles p {
+    margin: 2px 0 0;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    color: var(--carbon);
+  }
+  select, input[type="number"] {
+    width: 100%;
+    padding: 9px 10px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--crema);
+    color: var(--carbon);
+    font-size: 13px;
+    font-family: inherit;
+  }
+  select:focus, input:focus {
+    outline: 2px solid var(--sage);
+    outline-offset: 1px;
+  }
+  button.add {
+    width: 100%;
+    padding: 11px;
+    background: var(--terracota);
+    color: #FFFFFF;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 16px;
+    transition: background 0.15s ease;
+  }
+  button.add:hover {
+    background: var(--terracota-dark);
+  }
+  .divider {
+    border-top: 1px solid var(--border);
+    margin: 4px 0 14px;
+  }
+  .list-title {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  #itemsContainer {
+    min-height: 56px;
+  }
+  .empty-state, .error-state {
+    font-size: 12px;
+    text-align: center;
+    padding: 18px 8px;
+    border-radius: 6px;
+    background: var(--crema);
+  }
+  .empty-state {
+    color: var(--muted);
+  }
+  .error-state {
+    color: var(--terracota);
+    font-weight: 600;
+  }
+  .item-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background: var(--crema);
+    border-radius: 6px;
+    padding: 9px 10px;
+    margin-bottom: 6px;
+    font-size: 12px;
+  }
+  .item-info {
+    flex: 1;
+    padding-right: 8px;
+  }
+  .item-name {
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .item-detail {
+    color: var(--muted);
+    font-size: 11px;
+    margin-top: 3px;
+  }
+  .item-right {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .item-subtotal {
+    font-weight: 600;
+    color: var(--terracota);
+    white-space: nowrap;
+    font-size: 12px;
+  }
+  .remove-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 15px;
+    line-height: 1;
+    padding: 2px 4px;
+  }
+  .remove-btn:hover {
+    color: var(--terracota);
+  }
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 2px solid var(--carbon);
+  }
+  .total-label {
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .total-amount {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--terracota);
+  }
+  .total-note {
+    font-size: 10px;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 8px;
+  }
+</style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="icon">S/</div>
+    <div class="titles">
+      <h1>Cotizador de servicios</h1>
+      <p>Sartén &amp; Mango · UDEP Campus Lima</p>
+    </div>
+  </div>
+
+  <label for="category">Categoría</label>
+  <select id="category"></select>
+
+  <label for="service">Servicio</label>
+  <select id="service"></select>
+
+  <label id="qtyLabel" for="qty">Número de personas</label>
+  <input type="number" id="qty" min="1" value="1">
+
+  <button class="add" id="addBtn">Agregar a la cotización</button>
+
+  <div class="divider"></div>
+
+  <div class="list-title">Servicios cotizados</div>
+  <div id="itemsContainer">
+    <div class="empty-state">Aún no has agregado servicios a tu cotización.</div>
+  </div>
+
+  <div class="total-row">
+    <span class="total-label">Total estimado</span>
+    <span class="total-amount" id="totalAmount">S/ 0.00</span>
+  </div>
+  <div class="total-note">Cotización referencial, sujeta a confirmación de Sartén &amp; Mango.</div>
+
+<script>
+  var catalog = {
+    "Servicios operativos": [
+      { name: "Servicio de agua para aulas (jarra 1L + vaso)", price: 8, unit: "jarra" }
+    ],
+    "Cóctel / Brindis": [
+      { name: "Brindis Básico", price: 20, unit: "persona" },
+      { name: "Conferencia - Firma de Convenios", price: 34, unit: "persona" },
+      { name: "Brindis Simple", price: 33, unit: "persona" },
+      { name: "Brindis Clausuras Maestrías y Diplomados", price: 37.5, unit: "persona" },
+      { name: "Brindis para Ceremonias", price: 60, unit: "persona" }
+    ],
+    "Coffee Break": [
+      { name: "Maestría Tipo A", price: 19, unit: "persona" },
+      { name: "Maestría Tipo B", price: 21, unit: "persona" },
+      { name: "PAT, Diplomados, PMI, Cursos Largos", price: 19, unit: "persona" },
+      { name: "Seminarios Cortos, Reuniones Especiales", price: 17, unit: "persona" },
+      { name: "Reuniones de Profesores", price: 13, unit: "persona" }
+    ],
+    "Desayunos": [
+      { name: "Desayuno con Profesores", price: 24, unit: "persona" },
+      { name: "Desayuno con Alumnos", price: 27, unit: "persona" },
+      { name: "Desayuno con Autoridades", price: 33.5, unit: "persona" },
+      { name: "Desayuno Buffet Simple", price: 40, unit: "persona" }
+    ],
+    "Almuerzos": [
+      { name: "Almuerzo Invitados Especiales", price: 79, unit: "persona" },
+      { name: "Almuerzo de Trabajo Tipo A", price: 45, unit: "persona" },
+      { name: "Almuerzo de Trabajo Tipo B", price: 49, unit: "persona" }
+    ],
+    "Lonchera y Cenas": [
+      { name: "Lonchera Opción 1", price: 19, unit: "persona" },
+      { name: "Cena Tipo A", price: 40, unit: "persona" },
+      { name: "Cena Tipo B", price: 43, unit: "persona" },
+      { name: "Cena Tipo C", price: 47, unit: "persona" }
+    ]
+  };
+
+  var categorySelect = document.getElementById('category');
+  var serviceSelect = document.getElementById('service');
+  var qtyInput = document.getElementById('qty');
+  var qtyLabel = document.getElementById('qtyLabel');
+  var addBtn = document.getElementById('addBtn');
+  var itemsContainer = document.getElementById('itemsContainer');
+  var totalAmount = document.getElementById('totalAmount');
+
+  var quotedItems = [];
+  var errorTimeout = null;
+
+  function populateCategories() {
+    Object.keys(catalog).forEach(function (cat) {
+      var opt = document.createElement('option');
+      opt.value = cat;
+      opt.textContent = cat;
+      categorySelect.appendChild(opt);
+    });
+    populateServices();
+  }
+
+  function populateServices() {
+    serviceSelect.innerHTML = '';
+    var cat = categorySelect.value;
+    catalog[cat].forEach(function (item, idx) {
+      var opt = document.createElement('option');
+      opt.value = idx;
+      opt.textContent = item.name + ' - S/ ' + item.price.toFixed(2);
+      serviceSelect.appendChild(opt);
+    });
+    updateQtyLabel();
+  }
+
+  function updateQtyLabel() {
+    var cat = categorySelect.value;
+    var idx = parseInt(serviceSelect.value, 10);
+    var item = catalog[cat][idx];
+    if (item.unit === 'jarra') {
+      qtyLabel.textContent = 'Número de jarras';
+    } else {
+      qtyLabel.textContent = 'Número de personas';
+    }
+  }
+
+  categorySelect.addEventListener('change', populateServices);
+  serviceSelect.addEventListener('change', updateQtyLabel);
+
+  addBtn.addEventListener('click', function () {
+    var cat = categorySelect.value;
+    var idx = parseInt(serviceSelect.value, 10);
+    var item = catalog[cat][idx];
+    var qty = parseInt(qtyInput.value, 10);
+
+    if (!qty || qty < 1) {
+      showError('Ingresa un número válido mayor a 0.');
+      return;
+    }
+
+    quotedItems.push({
+      name: item.name,
+      price: item.price,
+      qty: qty,
+      unit: item.unit,
+      subtotal: item.price * qty
+    });
+
+    renderItems();
+  });
+
+  function showError(msg) {
+    if (errorTimeout) clearTimeout(errorTimeout);
+    itemsContainer.innerHTML = '<div class="error-state">' + msg + '</div>';
+    errorTimeout = setTimeout(renderItems, 2200);
+  }
+
+  function renderItems() {
+    if (errorTimeout) {
+      clearTimeout(errorTimeout);
+      errorTimeout = null;
+    }
+
+    if (quotedItems.length === 0) {
+      itemsContainer.innerHTML = '<div class="empty-state">Aún no has agregado servicios a tu cotización.</div>';
+    } else {
+      itemsContainer.innerHTML = '';
+      quotedItems.forEach(function (it, i) {
+        var unitLabel = it.unit === 'jarra' ? 'jarra(s)' : 'persona(s)';
+        var row = document.createElement('div');
+        row.className = 'item-row';
+
+        var info = document.createElement('div');
+        info.className = 'item-info';
+
+        var name = document.createElement('div');
+        name.className = 'item-name';
+        name.textContent = it.name;
+
+        var detail = document.createElement('div');
+        detail.className = 'item-detail';
+        detail.textContent = it.qty + ' ' + unitLabel + ' x S/ ' + it.price.toFixed(2);
+
+        info.appendChild(name);
+        info.appendChild(detail);
+
+        var right = document.createElement('div');
+        right.className = 'item-right';
+
+        var subtotal = document.createElement('span');
+        subtotal.className = 'item-subtotal';
+        subtotal.textContent = 'S/ ' + it.subtotal.toFixed(2);
+
+        var removeBtn = document.createElement('button');
+        removeBtn.className = 'remove-btn';
+        removeBtn.setAttribute('aria-label', 'Quitar');
+        removeBtn.textContent = '\u2715';
+        removeBtn.addEventListener('click', function () {
+          quotedItems.splice(i, 1);
+          renderItems();
+        });
+
+        right.appendChild(subtotal);
+        right.appendChild(removeBtn);
+
+        row.appendChild(info);
+        row.appendChild(right);
+        itemsContainer.appendChild(row);
+      });
+    }
+
+    var total = quotedItems.reduce(function (sum, it) { return sum + it.subtotal; }, 0);
+    totalAmount.textContent = 'S/ ' + total.toFixed(2);
+  }
+
+  populateCategories();
+  renderItems();
+</script>
+
+</body>
+</html>
