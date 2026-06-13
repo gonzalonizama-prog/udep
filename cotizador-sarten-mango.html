@@ -18,12 +18,17 @@
   html, body {
     margin: 0;
     padding: 0;
+    height: 100%;
   }
   body {
     font-family: 'Segoe UI', Arial, sans-serif;
     background: #FFFFFF;
     color: var(--carbon);
     padding: 16px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    overflow: hidden;
   }
   .header {
     display: flex;
@@ -103,8 +108,8 @@
     margin-bottom: 10px;
   }
   #itemsContainer {
-    min-height: 56px;
-    max-height: 220px;
+    min-height: 40px;
+    flex: 1;
     overflow-y: auto;
     padding-right: 2px;
   }
@@ -183,6 +188,7 @@
     margin-top: 14px;
     padding-top: 12px;
     border-top: 2px solid var(--carbon);
+    flex-shrink: 0;
   }
   .total-label {
     font-size: 13px;
@@ -198,6 +204,7 @@
     color: var(--muted);
     text-align: center;
     margin-top: 8px;
+    flex-shrink: 0;
   }
 </style>
 </head>
